@@ -1,0 +1,10 @@
+http://blog.mindedsecurity.com/2009/05/client-side-http-parameter-pollution.html
+https://www.acunetix.com/vulnerability-scanner/php-security-scanner/
+http://www.acunetix.com
+https://www.acunetix.com/vulnerability-scanner/
+mailto://wvs@acunetix.com
+javascript://loadSomething('categories.php');
+https://www.acunetix.com/blog/articles/prevent-sql-injection-vulnerabilities-in-php-applications/
+https://www.acunetix.com/
+http://www.eclectasy.com/Fractal-Explorer/index.html
+javascript://loadSomething('artists.php');

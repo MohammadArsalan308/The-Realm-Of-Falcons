@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>{{params['blog_name']}}</title>
+	<link rel="stylesheet" type="text/css" href="static/css/login.css">
+	<link href="https://fonts.googleapis.com/css2?family=Jost:wght@500&display=swap" rel="stylesheet">
+
+	<style>
+
+	</style>
+</head>
+
+<body>
+	<div class="login-logo" style="width:1%;">
+		<img src="{{ url_for('static',filename='/images/f3.png') }}" alt="" style="width: 3000%; padding: 10px;">
+	</div>
+	<div class="ripple-background">
+		<div class="circle xxlarge shade1"></div>
+		<div class="circle xlarge shade2"></div>
+		<div class="circle large shade3"></div>
+		<div class="circle mediun shade4"></div>
+		<div class="circle small shade5"></div>
+	</div>
+	<div class="area">
+		<ul class="circles">
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ul>
+	</div>
+
+	<div class="main">
+
+		<input type="checkbox" id="chk" aria-hidden="true">
+
+		<div class="signup">
+			<form action="/Signup" method="POST" autocomplete="off">
+				<label for="chk" aria-hidden="true">Sign up</label>
+				<div class="input-section">
+					<input type="text" name="name" class="input-box" placeholder="User name" required=""
+						id="first-name-input">
+					<span id="first-name-error" class="hide required-color error-message">Invalid Input</span>
+					<span id="empty-first-name" class="hide required-color error-message">Name Cannot Be
+						Empty</span>
+				</div>
+				<div class="input-section">
+					<input type="text" name="email" class="input-box" placeholder="Email" required id="email">
+					<span id="email-error" class="hide required-color error-message">Invalid Email</span>
+					<span id="empty-email" class="hide required-color error-message">Email Cannot Be Empty</span>
+				</div>
+				<div class="input-section">
+					<input type="password" name="pswd" class="input-box" placeholder="Password" required=""
+						id="password">
+					<p id="password-error" class="hide required-color error-message">
+						Passwords Should Have Letter, Special
+						symbols, Numbers And Length >=8
+					</p>
+					<span id="empty-password" class="hide required-color error-message">
+						Password Cannot Be Empty
+					</span>
+				</div>
+				<input type="checkbox" onclick="myFunction1()" style="margin-left:20%; size: 2px;">
+				<span style="font-size:medium; font-family: 'Jost', sans-serif; color: #fff;">Show</span>
+
+				<button type="submit">Sign up</button>
+			</form>
+		</div>
+
+		<div class="login">
+			<form action="/" method="POST">
+				<label for="chk" aria-hidden="true">Login</label>
+				<input type="email" name="email" class="input-box" placeholder="Email" required="" value="{{email}}">
+				<input type="password" name="pswd" class="input-box" placeholder="Password" required="" id="password1"
+					value="{{password}}">
+				<input type="checkbox" onclick="myFunction()" style="margin-left:20%; size: 1px;">
+				<span style="font-size:medium; font-family: 'Jost', sans-serif; color: #573b8a">Show</span>
+				<button type="submit">Login</button>
+			</form>
+		</div>
+	</div>
+	{% with messages = get_flashed_messages() %}
+	{% if messages %}
+	{% for message in messages %}
+	<div class="alert">
+		<span class="close-btn" onclick="this.parentElement.style.display='none';">&times;</span>
+		<p>{{message}}</p>
+	</div>
+	{% endfor %}
+	{% endif %}
+	{% endwith %}
+	<script>
+		function myFunction() {
+			var x = document.getElementById("password1");
+			if (x.type === "password") {
+				x.type = "text";
+			} else {
+				x.type = "password";
+			}
+		}
+		function myFunction1() {
+			var x = document.getElementById("password");
+			if (x.type === "password") {
+				x.type = "text";
+			} else {
+				x.type = "password";
+			}
+		}
+
+		// Get input elements
+const nameInput = document.getElementById('first-name-input');
+const emailInput = document.getElementById('email');
+const passwordInput = document.getElementById('password');
+
+// Get error message elements
+const nameError = document.getElementById('first-name-error');
+const emptyNameError = document.getElementById('empty-first-name');
+const emailError = document.getElementById('email-error');
+const emptyEmailError = document.getElementById('empty-email');
+const passwordError = document.getElementById('password-error');
+const emptyPasswordError = document.getElementById('empty-password');
+
+// Add event listeners to input fields
+nameInput.addEventListener('input', validateName);
+emailInput.addEventListener('input', validateEmail);
+passwordInput.addEventListener('input', validatePassword);
+
+// Define validation functions
+function validateName() {
+  const name = nameInput.value.trim();
+  if (name === '') {
+    showErrorMessage(emptyNameError);
+	hideErrorMessage(nameError);
+  } else {
+    hideErrorMessage(emptyNameError);
+    if (!isLetters(name)) {
+      showErrorMessage(nameError);
+    } else {
+      hideErrorMessage(nameError);
+    }
+  }
+}
+
+function validateEmail() {
+  const email = emailInput.value.trim();
+  if (email === '') {
+    showErrorMessage(emptyEmailError);
+	hideErrorMessage(emailError);
+  } else {
+    hideErrorMessage(emptyEmailError);
+    if (!isValidEmail(email)) {
+      showErrorMessage(emailError);
+    } else {
+      hideErrorMessage(emailError);
+    }
+  }
+}
+
+function validatePassword() {
+  const password = passwordInput.value;
+  if (password === '') {
+    showErrorMessage(emptyPasswordError);
+	hideErrorMessage(passwordError);
+  } else {
+    hideErrorMessage(emptyPasswordError);
+    if (!isValidPassword(password)) {
+      showErrorMessage(passwordError);
+    } else {
+      hideErrorMessage(passwordError);
+    }
+  }
+}
+
+// Define utility functions
+function showErrorMessage(errorElement) {
+  errorElement.classList.remove('hide');
+}
+
+function hideErrorMessage(errorElement) {
+  errorElement.classList.add('hide');
+}
+function isLetters(str) {
+  return /^[a-zA-Z]{3,}(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/.test(str);
+}
+function isValidEmail(email) {
+  // Regular expression to validate email format
+  const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
+  return emailRegex.test(email);
+}
+
+function isValidPassword(password) {
+  // Regular expression to validate password format
+  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+  return passwordRegex.test(password);
+}
+
+	</script>
+
+	<script src="{{ url_for('static',filename='/js/login.js') }}"></script>
+</body>
+
+</html>

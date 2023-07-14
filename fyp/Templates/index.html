@@ -1,0 +1,443 @@
+{% extends 'layout.html' %}
+{% block body %}
+<div class="dash-content">
+
+
+    <div class="overview">
+        <div class="title">
+            <i class="uil uil-tachometer-fast-alt"></i>
+            <span class="text">Dashboard</span>
+        </div>
+
+        <div class="boxes">
+            <a href="#" class="box box1" data-toggle="modal" data-target="#basic_scan_model" data-whatever="@mdo"
+                style="text-decoration: none;">
+                <i class="uil uil-react"></i>
+                <span class="number">Basic Scan</span>
+                <span class="text">
+                    A simple scan to discover live hosts & open ports.
+                </span>
+            </a>
+
+            <a href="#" class="box box2" data-toggle="modal" data-target="#advanced_scan_model" data-whatever="@mdo"
+                style="text-decoration: none;">
+                <i class="uil uil-globe"></i>
+                <span class="number">Advanced scan</span>
+                <span class="text">A full system scan with descriptive port scan, subdomain enumeration, file brute force &
+                    all web vulnerabilities check.</span>
+            </a>
+            <a href="#" class="box box3" data-toggle="modal" data-target="#Web_Application_Tests_model" data-whatever="@mdo"
+            style="text-decoration: none;">
+                <i class="uil uil-browser"></i>
+                <span class="number">Web Application Tests</span>
+                <span class="text">A scan to detect all web vulnerabilities.</span>
+        </a>
+
+        </div>
+    </div>
+
+    <div class="activity">
+        <div class="title">
+            <i class="uil uil-clock-three"></i>
+            <span class="text">Recent Activity</span>
+        </div>
+
+        <div class="activity-data">
+            <div class="container">
+                <table id="data" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">SNo</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Scan Type</th>
+                            <th scope="col">Time</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for todo in scan_all %}
+                        <tr>
+                            <td scope="row">{{loop.index}}</td>
+                            <td>{{todo.name}}</td>
+                            <td>{{todo.Description[0:30]}}</td>
+                            <td>{{todo.scan_type}}</td>
+                            <td>{{todo.create_date}}</td>
+                            <td>
+                                <a href="/basic_scan_start/{{todo.sno}}" type="text" onclick="showOverlay();">
+                                    <i class="uil uil-play" style="font-size: 24px;
+                                        min-width: 45px;
+                                        height: 100%;
+                                        align-items: center;
+                                        justify-content: center;
+                                        color: var(--delete1-color);" data-toggle="tooltip" data-placement="top" title="Start scan">
+                                    </i></a> |
+                                <a href="/basic_scan_update/{{todo.sno}}" type="text" data-toggle="modal"
+                                    data-target="#modaledit{{todo.sno}}">
+                                    <i class="uil uil-edit" style="font-size: 24px;
+                                    min-width: 45px;
+                                    height: 100%;
+                                    align-items: center;
+                                    justify-content: center;
+                                    color:var(--delete2-color);" data-toggle="tooltip" data-placement="right" title="Edit"></i></a>
+                                |
+                                <a href="/basic_scan_delete/{{todo.sno}}" type="text" data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal{{todo.sno}}">
+                                    <i class="uil uil-trash-alt" style="font-size: 24px;
+                                    min-width: 45px;
+                                    height: 100%;
+                                    align-items: center;
+                                    justify-content: center;
+                                    color:var(--delete3-color);" data-toggle="tooltip" data-placement="right"
+                                        title="Delete"></i></a>
+                            </td>
+                        </tr>
+
+                        <!-- EDIT scan Modal -->
+
+                        <div class="modal fade" id="modaledit{{todo.sno}}" tabindex="-1" role="dialog"
+                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <img src="{{ url_for('static',filename='/images/f1.png') }}" alt="" width="34"
+                                            height="34" style=" object-fit: cover; border-radius: 50%;">
+                                        <h5 class="modal-title ml-3" id="exampleModalLabel">Edit scan</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="/basic_scan_update/{{todo.sno}}" method="POST">
+                                            <div class="mb-3">
+                                                <label for="exampleFormControlInput1" class="form-label">Save
+                                                    Name</label>
+                                                <input type="text" class="form-control" id="name" name="name"
+                                                    value="{{todo.name}}" placeholder="name">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="exampleFormControlTextarea1"
+                                                    class="form-label">Description</label>
+                                                <textarea class="form-control" id="exampleFormControlTextarea1"
+                                                    name="dist" rows="3">{{todo.Description}}</textarea>
+                                            </div>
+                                            <div class="mb-3">
+                                                <hr>
+                                                <label for="exampleFormControlTextarea1" class="form-label">Port range</label>
+                                                    <input type="text" class="form-control" id="name" name="port_range"
+                                                    value="{{todo.port_range}}" placeholder="example 10-30">
+                                                <hr>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="exampleFormControlTextarea1"
+                                                    class="form-label">Target</label>
+                                                <input class="form-control" name="target"
+                                                    id="exampleFormControlTextarea1" rows="3" value="{{todo.Target}}">
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-success">Save Change</button>
+                                            </div>
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- End of Edit Scan Modal -->
+                        <!-- delete Modal -->
+
+                        <div class="modal fade" id="deleteModal{{todo.sno}}" tabindex="-1"
+                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <img src="{{ url_for('static',filename='/images/f1.png') }}" alt="" width="34"
+                                            height="34" style=" object-fit: cover; border-radius: 50%;">
+                                        <h1 class="modal-title ml-3 fs-5" id="exampleModalLabel">Delete</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are Sure Want To Deleted: {{todo.name}} ?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <a href="/basic_scan_delete/{{todo.sno}}" type="button"
+                                            class="btn btn-primary">Delete
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Basic scan model -->
+<div class="modal fade" id="basic_scan_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true" data-bs-theme="dark">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #4DA3FF; color: #fff;">
+                <img src="{{ url_for('static',filename='/images/f1.png') }}" alt="" width="34" height="34"
+                    style=" object-fit: cover; border-radius: 50%;">
+                <h5 class="modal-title ml-3" id="exampleModalLabel">Add Basic scan</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: #fff;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="/basic_scan" method="POST" class="">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Save Name</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="name" required>
+
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlTextarea1" class="form-label">Description</label>
+                        <textarea class="form-control" id="exampleFormControlTextarea1" name="dist" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlTextarea1" class="form-label">Port range</label>
+                        <div class="input-group mb-3">
+                            <input type="number" class="form-control" name="minbox" placeholder="Starting range"
+                                aria-label="Username">
+                            <span class="input-group-text">-</span>
+                            <input type="number" class="form-control" name="maxbox" placeholder="Ending range"
+                                aria-label="Server">
+                        </div>
+                        <div class="separator">
+                            <hr class="line">
+                            <span>Or</span>
+                            <hr class="line">
+                        </div>
+                        <div class="wrapper">
+                            <div class="values">
+                                <span id="range1">
+                                    0
+                                </span>
+                                <span> &dash; </span>
+                                <span id="range2">
+                                    1000
+                                </span>
+                            </div>
+                            <div class="container">
+                                <div class="slider-track"></div>
+                                <input type="range" min="0" max="1000" name="minport" value="400" id="slider-1"
+                                    oninput="slideOne()">
+                                <input type="range" min="0" max="1000" name="maxport" value="600" id="slider-2"
+                                    oninput="slideTwo()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlTextarea1" class="form-label">Target</label>
+                        <input class="form-control" name="target" id="exampleFormControlTextarea1" rows="3" required
+                            placeholder="IP or Domain">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success" name="action" value="save">Save</button>
+                        <button type="submit" class="btn btn-primary" name="action" value="start_scan"
+                            onclick="showOverlay();">Save & Start scan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Advanced scan model -->
+<div class="modal fade" id="advanced_scan_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <img src="{{ url_for('static',filename='/images/f1.png') }}" alt="" width="34" height="34"
+                    style=" object-fit: cover; border-radius: 50%;">
+                <h5 class="modal-title ml-3" id="exampleModalLabel">Add Advanced scan</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="/advanced_scan" method="POST" class="pl-3 pr-3">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Save Name</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlTextarea1" class="form-label">Description</label>
+                        <textarea class="form-control" id="exampleFormControlTextarea1" name="dist" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                
+                        <label for="exampleFormControlTextarea1" class="form-label">Port range</label>
+                        <div class="input-group mb-3">
+                            <input type="number" class="form-control" name="minbox" placeholder="Starting range"
+                                aria-label="Username">
+                            <span class="input-group-text">-</span>
+                            <input type="number" class="form-control" name="maxbox" placeholder="Ending range"
+                                aria-label="Server">
+                        </div>
+                        <div class="separator">
+                            <hr class="line">
+                            <span>Or</span>
+                            <hr class="line">
+                        </div>
+                        <div class="wrapper">
+                            <div class="values">
+                                <span id="Arange1">
+                                    0
+                                </span>
+                                <span> &dash; </span>
+                                <span id="Arange2">
+                                    1000
+                                </span>
+                            </div>
+                            <div class="container">
+                                <div class="Aslider-track"></div>
+                                <input type="range" min="0" max="1000" name="minport" value="400" id="Aslider-1"
+                                    oninput="AslideOne()">
+                                <input type="range" min="0" max="1000" name="maxport" value="600" id="Aslider-2"
+                                    oninput="AslideTwo()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlTextarea1" class="form-label">Target</label>
+                        <input class="form-control" name="target" id="exampleFormControlTextarea1" rows="3" required
+                            placeholder="IP or Domain">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success round" name="action" value="save">Save</button>
+                        <button type="submit" class="btn btn-primary" name="action" value="start_scan"
+                            onclick="showOverlay();">Save & Start scan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Web_Application_Tests model -->
+<div class="modal fade" id="Web_Application_Tests_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <img src="{{ url_for('static',filename='/images/f1.png') }}" alt="" width="34" height="34"
+                    style=" object-fit: cover; border-radius: 50%;">
+                <h5 class="modal-title ml-3" id="exampleModalLabel">Add Web Application Tests</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="/Web_Application_Tests" method="POST" class="pl-3 pr-3">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Enter name of attack</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlTextarea1" class="form-label">Description</label>
+                        <textarea class="form-control" id="exampleFormControlTextarea1" name="dist" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlTextarea1" class="form-label">Target</label>
+                        <input class="form-control" name="target" id="exampleFormControlTextarea1" rows="3" required
+                            placeholder="IP or Domain">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success round" name="action" value="save">Save</button>
+                        <button type="submit" class="btn btn-primary" name="action" value="start_scan"
+                            onclick="showOverlay();">Save & Start scan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+    crossorigin="anonymous"></script>
+{% endblock body %}
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+        $('#data').DataTable({
+            columns: [
+                { orderable: false, searchable: false },
+                null,
+                { orderable: false, searchable: false },
+                { orderable: false, searchable: false },
+                { orderable: false, searchable: false },
+                { orderable: false, searchable: false }],
+        });
+    });
+    // value range script
+    var slider = document.getElementById("customRange3");
+    var output = document.getElementById("demo");
+
+    output.innerHTML = slider.value;
+
+    slider.oninput = function () {
+        output.innerHTML = this.value;
+    }
+
+    var slider1 = document.getElementById("range");
+    var output1 = document.getElementById("values");
+
+    output1.innerHTML = slider.value;
+
+    slider1.oninput = function () {
+        output1.innerHTML = this.value;
+    }
+    //
+    var slider2 = document.getElementById("customRange");
+    var output2 = document.getElementById("demo1");
+
+    output.innerHTML = slider2.value;
+
+    slider2.oninput = function () {
+        output2.innerHTML = this.value;
+    }
+
+    var slider3 = document.getElementById("range1");
+    var output3 = document.getElementById("values1");
+
+    output3.innerHTML = slider3.value;
+
+    slider3.oninput = function () {
+        output3.innerHTML = this.value;
+    }
+    //
+    var slider3 = document.getElementById("customRange4");
+    var output3 = document.getElementById("demo4");
+
+    output.innerHTML = slider3.value;
+
+    slider3.oninput = function () {
+        output3.innerHTML = this.value;
+    }
+
+    var slider4 = document.getElementById("range4");
+    var output4 = document.getElementById("values4");
+
+    output4.innerHTML = slider4.value;
+
+    slider4.oninput = function () {
+        output4.innerHTML = this.value;
+    }
+
+
+</script>
+{% endblock %}

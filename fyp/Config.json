@@ -1,0 +1,22 @@
+{
+    "params":
+    {
+      "local_server":"True",
+      "local_uri": "mysql://root:@localhost/TheRealmoffalcons",
+      "prod_uri":"mysql://root:@localhost/TheRealmofFalcons",
+      "fb_url":"https://facebook.com/codingthunder",
+      "tw_url":"https://twitter.com/codingthunder",
+      "gh_url": "https://github.com/codingthunder",
+      "blog_name": "Realm of Falcons",
+      "tag_line": "Signup",
+      "gmail-user":"mohammadarsalan308205@gmail.com",
+      "gmail-password":"arsalansheikh",
+      "about_text": "Hi my name is harry and I create programming tutorials and I am a good boy",
+      "no_of_posts": 3,
+      "login_image":"login.svg",
+      "user_name":"",
+      "user_email": "",
+      "upload_location":"C:\\Users\\Altaf\\Desktop\\fyp\\static\\Images"
+    }
+  }
+  

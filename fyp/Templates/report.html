@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+	integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+	
+    <!----===== Iconscout CSS ===== -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap5.css">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css"
+        integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"
+        integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
+        crossorigin="anonymous"></script>
+
+	
+    <title>{{params['blog_name']}}</title>
+</head>
+<body>
+	<div class="dash-content" style="width: auto; margin-top: 2%; padding: 5%;">
+		<H1 class="fs-1" style="background-color: #0D6EFD; color: #FFF; padding: 2%;">{{scan_all.scan_type}} Scanning Results</h1>
+		<div class="mb-3">
+			<h5 for="exampleFormControlInput1" class="form-label">Name : {{scan_all.name}}</h5>
+		</div>
+		<div class="mb-3">
+			<h5 for="exampleFormControlInput1" class="form-label">Description : {{scan_all.Description}}</h5>
+		</div>
+		<div class="mb-3">
+			<h5 for="exampleFormControlInput1" class="form-label">Target : {{scan_all.Target}}</h5>
+		</div>
+		<div class="mb-3">
+			<h5 for="exampleFormControlInput1" class="form-label">Ports : {{scan_all.port_range}}</h5>
+		</div>
+		{% if scan_data_list|length == 0 %}
+		{% if scan_all.scan_type == 'Basic Port' or scan_all.scan_type == 'Advanced Port' %}
+		<h5 style="padding: 2%; background-color: #0D6EFD; color: #FFF; ">Results for target {{ target }}, ports {{ start_port }}</h5>
+			<div class="alert alert-secondary" role="alert">
+				No Record found in the ports range : {{scan_all.port_range}}
+			</div>
+		{% endif %}
+		{% else %}
+		<h5 style="padding: 2%; background-color: #0D6EFD; color: #FFF; ">Results for target {{ target }}, ports {{ start_port }}</h5>
+		<div class="dark-mode">
+			<table class="table table-striped shadow p-4 mb-5 bg-body-tertiary rounded">
+				<thead>
+					<tr>
+						<th>SNO</th>
+						<th>Port</th>
+						<th>Protocol</th>
+						<th>Service</th>
+						<th>Version</th>
+						<th>OS</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for port in scan_data_list %}
+					<tr>
+						<td>{{loop.index}}</td>
+						<td>{{ port['port'] }}</td>
+						<td>{{ port['protocol'] }}</td>
+						<td>{{ port['service'] }}</td>
+						<td>{{ port['version'] }}</td>
+						<td>{{ port['os_family'] }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		<div class="dark-mode shadow rounded " style="background-color: var( --profile-color);">
+			<div class="card-header" style="background-color:#0D6EFD;">
+				<h3 style="color: #fff;">Vulnerability Details/Remediation</h3>
+			</div>
+			<div class="card-body p-4">
+				<h5>Vulnerability Threat Level </h5>
+				<span class="text-center">{{ port_solution[0] }}</span>
+				<hr>
+				<h5>Vulnerability Definition</h5>
+				<span class="text-center">{{ port_solution[1] }}</span>
+				<hr>
+				<h5>Vulnerability Remediation </h5>
+				<span class="text-center">{{ port_solution[2] }}</span>
+			</div>
+		</div>
+		{% endif %}
+		<hr>
+		{% if bruteforcing_list|length == 0 %}
+		{% if scan_all.scan_type == 'Advanced Port' %}
+		<h5 style="padding: 2%; background-color: #0D6EFD; color: #FFF;"> Directory/File bruteforcing Results for target {{ target }}</h5>
+		<div class="alert alert-secondary" role="alert">
+			No Directory/File bruteforcing found in target {{ target }}
+		</div>
+		{% endif %}
+		{% else %}
+		<h5 style="padding: 2%; background-color: #0D6EFD; color: #FFF;"> Directory/File bruteforcing Results for target {{ target }}</h5>
+		<div class="dark-mode" style="width: 80%;">
+			<table class="table table-striped shadow p-4 mb-5 bg-body-tertiary rounded">
+				<thead>
+					<tr>
+						<th>SNO</th>
+						<th>Url</a></th>
+						<th>Response status code</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for item in bruteforcing_list %}
+					<tr>
+						<td>{{loop.index}}</td>
+						<td>{{ item['url']}}</td>
+						<td>{{ item['response_status_code'] }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		<div class="dark-mode shadow rounded " style="background-color: var( --profile-color);">
+			<div class="card-header" style="background-color:#0D6EFD;">
+				<h3 style="color: #fff;">Vulnerability Details/Remediation</h3>
+			</div>
+			<div class="card-body p-4">
+				<h5>Vulnerability Threat Level </h5>
+				<span class="text-center">{{ bruteforcing_solution_list[0] }}</span>
+				<hr>
+				<h5>Vulnerability Definition</h5>
+				<span class="text-center">{{ bruteforcing_solution_list[1] }}</span>
+				<hr>
+				<h5>Vulnerability Remediation </h5>
+				<span class="text-center">{{ bruteforcing_solution_list[2] }}</span>
+			</div>
+		</div>
+		{% endif %}
+		<hr>
+		{% if subdomain_list|length == 0 %}
+		{% if scan_all.scan_type == 'Advanced Port' %}
+		<h5 style="margin-bottom: 5%; padding: 2%; background-color: #0D6EFD; color: #FFF;"> Subdomain enumeration Results for target {{ target }}</h5>
+				<div class="alert alert-secondary" role="alert">
+					No Subdomain found in target {{ target }}
+				</div>
+			{% endif %}
+		{% else %}
+		<h5 style="margin-bottom: 5%; padding: 2%; background-color: #0D6EFD; color: #FFF;"> Subdomain enumeration Results for target {{ target }}</h5>
+		<div class="dark-mode" style="width: 80%;">
+			<table class="table table-striped shadow p-5 mb-5 bg-body-tertiary rounded">
+				<thead>
+					<tr>
+						<th>SNO</th>
+						<th>Subdomain list</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for item in subdomain_list %}
+					<tr>
+						<td>{{loop.index}}</td>
+						<td>{{item['subdomain'] }}</a></td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		<div class="dark-mode shadow mb-5 rounded " style="background-color: var( --profile-color);">
+			<div class="card-header" style="background-color:#0D6EFD;">
+				<h3 style="color: #fff;">Vulnerability Details/Remediation</h3>
+			</div>
+			<div class="card-body p-4">
+				
+				<h5>Vulnerability Threat Level </h5>
+				<span class="text-center">{{ subdomain_solution_list[0] }}</span>
+				<hr>
+				<h5>Vulnerability Definition</h5>
+				<span class="text-center">{{ subdomain_solution_list[1] }}</span>
+				<hr>
+				<h5>Vulnerability Remediation </h5>
+				<span class="text-center">{{ subdomain_solution_list[2] }}</span>
+				
+			</div>
+		</div>
+		{% endif %}
+		{% if xss_data_list|length == 0 %}
+	
+		{% else %}
+		<h5 style="margin-bottom: 5%; padding: 2%; background-color: #0D6EFD; color: #FFF;">Initiating Cross-Site Scripting Attacks/Vulnerabilty Check on {{ target }}</h5>
+		{% for item in xss_data_list %}
+		<div class="dark-mode" style="width: 80%;">
+			<table class="table table-striped shadow p-5 mb-5 bg-body-tertiary rounded">
+				<tbody>
+	
+					{% for item1 in item %}
+					<tr>
+						<td>{{ item1 }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		{% endfor %}
+		{% if xss_solution|length == 0 %}
+
+		{% else %}
+		<div class="dark-mode shadow mb-5 rounded " style="background-color: var( --profile-color);">
+			<div class="card-header" style="background-color:#0D6EFD;">
+				<h3 style="color: #fff;">Vulnerability Details/Remediation</h3>
+			</div>
+			<div class="card-body p-4">
+				<h5>Vulnerability Threat Level </h5>
+				<span class="text-center">{{ xss_solution[0] }}</span>
+				<hr>
+				<h5>Vulnerability Definition</h5>
+				<span class="text-center">{{ xss_solution[1] }}</span>
+				<hr>
+				<h5>Vulnerability Remediation </h5>
+				<span class="text-center">{{ xss_solution[2] }}</span>
+			</div>
+		</div>
+		{% endif %}
+		{% endif %}
+		{% if sql_data_list|length == 0 %}
+			<!-- {% if scan_all.scan_type == 'Web Application Tests' or scan_all.scan_type == 'Advanced Port' %}
+				<p style="margin-bottom: 5%; padding: 2%; ">Initiating SQL Injection Attacks/Vulnerabilty Check on <span>{{ target }}</span></p>
+			{% endif %} -->
+		{% else %}
+		<h5 style="margin-bottom: 5%; padding: 2%; background-color: #0D6EFD; color: #FFF;">Initiating SQL Injection Attacks/Vulnerabilty Check on {{ target }}</h5>
+		{% for item in sql_data_list %}
+		<div class="dark-mode" style="width: 80%;">
+			<table class="table table-striped shadow p-5 mb-5 bg-body-tertiary rounded">
+				<tbody>
+	
+					{% for item1 in item %}
+					<tr>
+						<td>{{ item1 }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		{% endfor %}
+		{% if sql_solution|length == 0 %}
+
+	{% else %}
+	<div class="dark-mode shadow mb-5 rounded " style="background-color: var( --profile-color);">
+		<div class="card-header" style="background-color:#0D6EFD;">
+			<h3 style="color: #fff;">Vulnerability Details/Remediation</h3>
+		</div>
+		<div class="card-body p-4">
+			<h5>Vulnerability Threat Level </h5>
+			<span class="text-center">{{ sql_solution[0] }}</span>
+			<hr>
+			<h5>Vulnerability Definition</h5>
+			<span class="text-center">{{ sql_solution[1] }}</span>
+			<hr>
+			<h5>Vulnerability Remediation </h5>
+			<span class="text-center">{{ sql_solution[2] }}</span>
+		</div>
+	</div>
+	{% endif %}
+		{% endif %}
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+		crossorigin="anonymous"></script>
+</body>
+</html>
